@@ -6,18 +6,18 @@ def calcular_ruta_optima(red_conexiones, origen, destino, factor_costo=1.0):
   """Calcula la ruta más corta en un grafo ponderado aplicando un factor de costo variable."""
   G = nx.Graph()
 
-  #Construimos el grafo aplicando la variable de ajuste (factor_costo)
+
   for u, v, peso_base in red_conexiones:
     peso_ajustado = (
         peso_base * factor_costo
-    )  #Variable dinámica que altera el peso
+    ) 
     G.add_edge(u, v, weight=peso_ajustado)
 
-  #Verificamos que los nodos existan en el grafo
+  
   if origen not in G or destino not in G:
     return None, None, f"Error: El origen o destino no existen en la red."
 
-  #Aplicamos Dijkstra
+
   ruta = nx.shortest_path(G, source=origen, target=destino, weight="weight")
   costo_total = nx.shortest_path_length(
       G, source=origen, target=destino, weight="weight"
@@ -28,7 +28,7 @@ def calcular_ruta_optima(red_conexiones, origen, destino, factor_costo=1.0):
 
 #DEFINICIÓN DE VARIABLES DEL SISTEMA
 
-#Variables de la red (Origen, Destino, Costo Base/Distancia).
+
 conexiones_base = [
     ("Depósito Central", "Sucursal Norte", 12),
     ("Depósito Central", "Sucursal Oeste", 15),
@@ -40,11 +40,11 @@ conexiones_base = [
     ("Sucursal Sur", "Cliente Final", 14),
 ]
 
-#Variables de ejecución
+
 punto_origen = "Depósito Central"
 punto_destino = "Cliente Final"
 
-#Variable de escenario (Ej: 1.0 = normal, 1.5 = 50% de tráfico/retraso en todas las rutas)
+
 factor_congestion = 1.0
 
 
@@ -62,18 +62,18 @@ if isinstance(ruta_optima, list):
   plt.figure(figsize=(10, 6))
   pos = nx.spring_layout(G, seed=42)
 
-  #nodos y estructura general
+
   nx.draw_networkx_nodes(G, pos, node_color="skyblue", node_size=2500)
   nx.draw_networkx_edges(G, pos, edge_color="gray", width=2)
   nx.draw_networkx_labels(G, pos, font_size=10, font_weight="bold")
 
-  #pesos ajustados en las aristas
+
   labels_peso = {
       (u, v): f"{d['weight']:.1f}" for u, v, d in G.edges(data=True)
   }
   nx.draw_networkx_edge_labels(G, pos, edge_labels=labels_peso)
 
-  #ruta óptima en color rojo
+  
   edges_en_ruta = list(zip(ruta_optima[:-1], ruta_optima[1:]))
   nx.draw_networkx_edges(
       G, pos, edgelist=edges_en_ruta, edge_color="crimson", width=4
